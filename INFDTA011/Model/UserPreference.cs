@@ -8,13 +8,13 @@ namespace INFDTA011.Model
     {
         public int UserId { get; set; }
         public int ArticleId { get; set; }
-        public float Rating { get { return this._rating; } set { SetRating(value); } }
-        float _rating;
+        public double Rating { get { return this._rating; } set { SetRating(value); } }
+        double _rating;
 
         public Dictionary<int, List<UserPreference>> UserPreferences { get { if (_userPreferences == null) { _userPreferences = GetAllUserPreferences(); } return _userPreferences; } set { _userPreferences = GetAllUserPreferences(); } }
         Dictionary<int, List<UserPreference>> _userPreferences;
 
-        private void SetRating(float rate)
+        private void SetRating(double rate)
         {
             if (rate >= 1 && rate <= 5)
             {
@@ -30,15 +30,15 @@ namespace INFDTA011.Model
         {
             Dictionary<int, List<UserPreference>> userPreferences = new Dictionary<int, List<UserPreference>>();
             //System.IO.StreamReader file = new System.IO.StreamReader(@"Data\userItem.data");
-            System.IO.StreamReader file = new System.IO.StreamReader(@"Data\test.data");
+            System.IO.StreamReader file = new System.IO.StreamReader(@"Data\test2.data");
 
             string line;
             while ((line = file.ReadLine()) != null)
             {
                 UserPreference item = new UserPreference();
-                item.UserId = Convert.ToInt32(line.Split(',')[0]);
-                item.ArticleId = Convert.ToInt32(line.Split(',')[1]);
-                item.Rating = float.Parse(line.Split(',')[2]);
+                item.UserId = Convert.ToInt32(line.Split(';')[0]);
+                item.ArticleId = Convert.ToInt32(line.Split(';')[1]);
+                item.Rating = float.Parse(line.Split(';')[2]);
 
                 if (userPreferences.ContainsKey(item.UserId))
                 {

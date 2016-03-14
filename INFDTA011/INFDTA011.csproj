@@ -43,9 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithm.cs" />
+    <Compile Include="Algorithms\Algorithm.cs" />
+    <Compile Include="Algorithms\AlgorithmDecorator.cs" />
+    <Compile Include="Algorithms\Pearson.cs" />
     <Compile Include="Assignment.cs" />
+    <Compile Include="Algorithms\Cosine.cs" />
+    <Compile Include="Algorithms\Euclidean.cs" />
+    <Compile Include="Algorithms\IAlgorithm.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Algorithms\Manhattan.cs" />
     <Compile Include="Model\ItemRating.cs" />
     <Compile Include="Model\UserPreference.cs" />
     <Compile Include="Program.cs" />
@@ -53,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Data\test2.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\test.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

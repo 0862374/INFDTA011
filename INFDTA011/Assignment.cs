@@ -39,7 +39,7 @@ namespace INFDTA011
             Euclidean,
             Cosine
         }
-        private Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, DistanceType distanceType)
+        public Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, DistanceType distanceType)
         {
             Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
 
