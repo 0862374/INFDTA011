@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace INFDTA011
 {
@@ -28,7 +30,7 @@ namespace INFDTA011
             Console.WriteLine("NearestNeightbor Pearson with user 5:");
             Console.WriteLine(NearestNeighbor(5, new UserPreference().UserPreferences, DistanceType.Euclidean).First());
 
-           Console.WriteLine("NearestNeightbor Cosine with user 5:");
+            Console.WriteLine("NearestNeightbor Cosine with user 5:");
             Console.WriteLine(NearestNeighbor(5, new UserPreference().UserPreferences, DistanceType.Cosine).First());
         }
         public enum DistanceType
@@ -37,7 +39,7 @@ namespace INFDTA011
             Euclidean,
             Cosine
         }
-        private Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, DistanceType distanceType)
+        public Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, DistanceType distanceType)
         {
             Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
 
@@ -56,17 +58,8 @@ namespace INFDTA011
                     {
                         decimal deci = Algorithm.Euclidean(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
                         nearestItemRatings.Add(item.Key, deci);
-                       
                     }
                     break;
-
-                case DistanceType.Cosine: 
-                    foreach(KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
-                    {
-                        decimal deci = Algorithm.Cosine(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
-                        nearestItemRatings.Add(item.Key, deci);
-                    }
-                    break; 
             }
 
             return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
