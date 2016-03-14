@@ -1,0 +1,16 @@
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\obj\Debug\INFDTA011.csprojResolveAssemblyReference.cache
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\bin\Debug\Data\test.data
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\bin\Debug\Data\userItem.data
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\bin\Debug\INFDTA011.exe.config
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\bin\Debug\INFDTA011.exe
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\bin\Debug\INFDTA011.pdb
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\obj\Debug\INFDTA011.exe
+C:\Users\Nabil\documents\visual studio 2013\Projects\INFDTA011\INFDTA011\obj\Debug\INFDTA011.pdb
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\bin\Debug\INFDTA011.exe.config
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\bin\Debug\Data\test.data
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\bin\Debug\Data\userItem.data
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\bin\Debug\INFDTA011.exe
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\bin\Debug\INFDTA011.pdb
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\obj\Debug\INFDTA011.csprojResolveAssemblyReference.cache
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\obj\Debug\INFDTA011.exe
+C:\Users\Mohammed\Documents\datasciences1\INFDTA011\INFDTA011\obj\Debug\INFDTA011.pdb

@@ -28,7 +28,7 @@ namespace INFDTA011
             Console.WriteLine("NearestNeightbor Pearson with user 5:");
             Console.WriteLine(NearestNeighbor(5, new UserPreference().UserPreferences, DistanceType.Euclidean).First());
 
-            Console.WriteLine("NearestNeightbor Cosine with user 5:");
+           Console.WriteLine("NearestNeightbor Cosine with user 5:");
             Console.WriteLine(NearestNeighbor(5, new UserPreference().UserPreferences, DistanceType.Cosine).First());
         }
         public enum DistanceType
@@ -56,17 +56,17 @@ namespace INFDTA011
                     {
                         decimal deci = Algorithm.Euclidean(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
                         nearestItemRatings.Add(item.Key, deci);
-
+                       
                     }
                     break;
 
-                case DistanceType.Cosine:
-                    foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
+                case DistanceType.Cosine: 
+                    foreach(KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
                     {
                         decimal deci = Algorithm.Cosine(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
                         nearestItemRatings.Add(item.Key, deci);
                     }
-                    break;
+                    break; 
             }
 
             return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);

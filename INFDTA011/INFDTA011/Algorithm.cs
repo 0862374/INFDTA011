@@ -37,10 +37,10 @@ namespace INFDTA011
 
             foreach (UserPreference rateOne in ratingOne)
             {
-
+                         
                 foreach (UserPreference rateTwo in ratingTwo.Where(x => x.ArticleId == rateOne.ArticleId))
                 {
-
+           
                     distance += (decimal)Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
                 }
             }
