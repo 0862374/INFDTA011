@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
 
 namespace INFDTA011
 {
@@ -39,7 +37,7 @@ namespace INFDTA011
             Euclidean,
             Cosine
         }
-        public Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, DistanceType distanceType)
+        private Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, DistanceType distanceType)
         {
             Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
 
@@ -57,6 +55,15 @@ namespace INFDTA011
                     foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
                     {
                         decimal deci = Algorithm.Euclidean(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
+                        nearestItemRatings.Add(item.Key, deci);
+
+                    }
+                    break;
+
+                case DistanceType.Cosine:
+                    foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
+                    {
+                        decimal deci = Algorithm.Cosine(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
                         nearestItemRatings.Add(item.Key, deci);
                     }
                     break;
