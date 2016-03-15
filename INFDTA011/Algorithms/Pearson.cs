@@ -22,7 +22,7 @@ namespace INFDTA011.Algorithms
             {
                 if (ratingTwo.Where(x => x.ArticleId == ratingOne.ElementAt(i).ArticleId).Count() > 0)
                 {
-                    if (ratingOne.ElementAt(i) != null && ratingTwo.ElementAt(i) != null)
+                    if (ratingOne.Count <= i && ratingTwo.ElementAt(i) <= i)
                     { 
                         n++;
                         double x = ratingOne.ElementAt(i).Rating;
