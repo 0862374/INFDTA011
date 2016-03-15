@@ -30,7 +30,7 @@ namespace INFDTA011.Model
         {
             Dictionary<int, List<UserPreference>> userPreferences = new Dictionary<int, List<UserPreference>>();
             //System.IO.StreamReader file = new System.IO.StreamReader(@"Data\userItem.data");
-            System.IO.StreamReader file = new System.IO.StreamReader(@"Data\test2.data");
+            System.IO.StreamReader file = new System.IO.StreamReader(@"Data\test.data");
 
             string line;
             while ((line = file.ReadLine()) != null)

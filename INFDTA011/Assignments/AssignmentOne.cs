@@ -36,21 +36,10 @@ namespace INFDTA011
             Console.WriteLine(NearestNeighbor(userId, new UserPreference().UserPreferences, new Cosine()).First());
         }
         
-        private Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, IAlgorithm algorithm)
-        {
-            Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
-
-            foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
-            {
-                decimal deci = algorithm.Calculate(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
-                nearestItemRatings.Add(item.Key, deci);
-            }
-
-            return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
-        }
-
+         
         public void PrintStepD()
         {
+            PredictRate(2, 101, new UserPreference().UserPreferences);
             throw new NotImplementedException();
         }
 
@@ -68,5 +57,30 @@ namespace INFDTA011
         {
             throw new NotImplementedException();
         }
+
+        private Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, IAlgorithm algorithm)
+        {
+            Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
+
+            foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
+            {
+                decimal deci = algorithm.Calculate(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
+                nearestItemRatings.Add(item.Key, deci);
+            }
+
+            return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private decimal PredictRate(int userID , int itemID, Dictionary<int, List<UserPreference>> UserPreferences)
+        {
+            Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userID, UserPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
+           
+            foreach (KeyValuePair<int, List<UserPreference>> user in UserPreferences.Where(x => x.Key != userID))
+            {
+
+            }
+            return 0;
+        }
+
     }
 }
