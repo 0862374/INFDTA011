@@ -106,9 +106,9 @@ namespace INFDTA011
 
 
 
-        private decimal PredictRate(int userID , int itemID, Dictionary<int, List<UserPreference>> UserPreferences)
+        private decimal PredictRate(int userId , int articleId, Dictionary<int, List<UserPreference>> UserPreferences)
         {
-            Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userID, UserPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
+            Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userId, UserPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
             decimal total_coefficient = Math.Abs(nearestNeighbor.Sum(x => x.Value));
             decimal predictedRate = 0;
 
@@ -116,7 +116,19 @@ namespace INFDTA011
             {
 
                 decimal influenceWeight = InfluenceWeight(Math.Abs(neighbor.Value), total_coefficient);
-                decimal rating = (decimal)UserPreferences.Where(x => x.Key == neighbor.Key).First().Value.First().Rating;
+
+                UserPreference user = null;
+                try
+                {
+                    user = UserPreferences
+                         .Where(p => p.Value.Any(c => c.UserId == neighbor.Key))
+                         .SelectMany(p => p.Value)
+                         .Where(c => c.ArticleId == articleId).First();
+
+                } catch(Exception e)
+                {
+                }
+                decimal rating = user != null ? (decimal)user.Rating : 0;
                 decimal weightedRating = WeightedRating(influenceWeight, rating);
 
                 predictedRate += weightedRating;
