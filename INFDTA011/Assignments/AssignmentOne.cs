@@ -113,12 +113,32 @@ namespace INFDTA011
             Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences));
 
             Console.WriteLine("--------------------------------------------------------------------------------");
+
+
+
         }
            
 
         public void PrintStepF()
         {
-            throw new NotImplementedException();
+
+            int userIdx = 7;
+            Console.WriteLine("Stap 6a: Nearest Neighbor of user {0}:", userIdx);
+
+            //List<int> articles
+            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
+            Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userIdx, userPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
+
+            foreach(KeyValuePair < int, decimal> neighbor in nearestNeighbor)
+            {
+                foreach(KeyValuePair<int, List<UserPreference>> user in userPreferences.Where(x => x.Key == userIdx))
+                {
+                    foreach (KeyValuePair<int, List<UserPreference>> neightborItem in userPreferences.Where(x => x.Key == userIdx))
+                    {
+                      
+                    }
+                }
+            }
         }
 
         public void PrintStepG()
