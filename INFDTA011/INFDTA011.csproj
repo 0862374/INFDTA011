@@ -43,10 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assignments\IAssingment.cs" />
     <Compile Include="Old\Algorithm.cs" />
     <Compile Include="Algorithms\AlgorithmDecorator.cs" />
     <Compile Include="Algorithms\Pearson.cs" />
-    <Compile Include="Old\Assignment.cs" />
+    <Compile Include="Assignments\AssignmentOne.cs" />
     <Compile Include="Algorithms\Cosine.cs" />
     <Compile Include="Algorithms\Euclidean.cs" />
     <Compile Include="Algorithms\IAlgorithm.cs" />
