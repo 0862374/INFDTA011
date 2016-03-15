@@ -7,6 +7,14 @@ namespace INFDTA011
 {
     class Euclidean : IAlgorithm
     {
+        public double treshhold
+        {
+            get
+            {
+                return 0.35;
+            }
+        }
+
         public decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             decimal distance = 0;

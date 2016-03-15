@@ -9,6 +9,14 @@ namespace INFDTA011.Algorithms
 {
     class Pearson : IAlgorithm
     {
+        public double treshhold
+        {
+            get
+            {
+                return 0.35;
+            }
+        }
+
         public decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             double sum_xy = 0;

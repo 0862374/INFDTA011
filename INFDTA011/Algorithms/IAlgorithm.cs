@@ -9,6 +9,7 @@ namespace INFDTA011
 {
     interface IAlgorithm
     {
+        double treshhold { get; }
         decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo);
     }
 }
