@@ -49,37 +49,72 @@ namespace INFDTA011
         {
             int userIdx = 7;
             int userIdy = 3;
-            int [] userItems = { 101, 103, 106 };
+            int[] userItems = { 101, 103, 106 };
             Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
-
-            Console.WriteLine("Stap 1: NearestNeightbor Pearson with user {0}:", userIdx);
+            Console.WriteLine("--------------------------------------------------------------------------------");
+            Console.WriteLine("Stap 1a: NearestNeightbor Pearson with user {0}:", userIdx);
             NearestNeighbor(userIdx, userPreferences, new Pearson()).Where(x => Math.Abs(x.Value) >= (decimal)new Pearson().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
 
-            Console.WriteLine("Stap 1: NearestNeightbor Euclidean with user {0}:", userIdx);
+            Console.WriteLine("Stap 1b: NearestNeightbor Euclidean with user {0}:", userIdx);
             NearestNeighbor(userIdx, userPreferences, new Euclidean()).Where(x => Math.Abs(x.Value) >= (decimal)new Euclidean().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
 
-            Console.WriteLine("Stap 1: NearestNeightbor Cosine with user {0}:", userIdx);
+            Console.WriteLine("Stap 1c: NearestNeightbor Cosine with user {0}:", userIdx);
             NearestNeighbor(userIdx, userPreferences, new Cosine()).Where(x => Math.Abs(x.Value) >= (decimal)new Cosine().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
+
+            Console.WriteLine("--------------------------------------------------------------------------------");
 
             userIdx = 4;
             Console.WriteLine("Stap 2: Pearson coefficient between user {0} and {1}:", userIdy, userIdx);
             Console.WriteLine(new Pearson().Calculate(userPreferences.Where(x => x.Key == userIdy).First().Value, userPreferences.Where(x => x.Key == userIdx).First().Value));
 
+            Console.WriteLine("--------------------------------------------------------------------------------");
             userIdx = 7;
-            
-            Console.WriteLine("Stap 3: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[0]);
+
+            Console.WriteLine("Stap 3a: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[0]);
             Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences));
 
-            Console.WriteLine("Stap 3: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[1]);
+            Console.WriteLine("Stap 3b: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[1]);
             Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences) + " " + userItems[1]);
 
-            Console.WriteLine("Stap 3: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[2]);
+            Console.WriteLine("Stap 3c: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[2]);
             Console.WriteLine(PredictRate(userIdx, userItems[2], userPreferences));
+            Console.WriteLine("--------------------------------------------------------------------------------");
+            userIdx = 4;
+            Console.WriteLine("Stap 4: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[0]);
+            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences));
 
+            Console.WriteLine("--------------------------------------------------------------------------------");
 
+            userIdx = 7;
+            UserPreference item = new UserPreference { UserId = userIdx, ArticleId = userItems[2], Rating = 2.8 };
+            if (userPreferences.ContainsKey(item.UserId))
+            {
+                userPreferences.Where(x => x.Key == item.UserId).First().Value.Add(item);
+            }
+            else
+            {
+                userPreferences.Add(item.UserId, new List<UserPreference> { item });
+            }
+            Console.WriteLine("Stap 5a: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 2.8:", userIdx, userItems[0]);
+            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences));
 
-            throw new NotImplementedException();
+            Console.WriteLine("Stap 5b: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 2.8 :", userIdx, userItems[1]);
+            Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences));
+
+            Console.WriteLine("--------------------------------------------------------------------------------");
+            userPreferences
+                         .Where(p => p.Value.Any(c => c.UserId == userIdx))
+                         .SelectMany(p => p.Value)
+                         .Where(c => c.ArticleId == userItems[2]).First().Rating = 5;
+            Console.WriteLine("Stap 6a: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 5 :", userIdx, userItems[0]);
+            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences));
+
+            Console.WriteLine("Stap 6b: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 5 :", userIdx, userItems[1]);
+            Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences));
+
+            Console.WriteLine("--------------------------------------------------------------------------------");
         }
+           
 
         public void PrintStepF()
         {
@@ -116,7 +151,6 @@ namespace INFDTA011
             {
 
                 decimal influenceWeight = InfluenceWeight(Math.Abs(neighbor.Value), total_coefficient);
-
                 UserPreference user = null;
                 try
                 {
@@ -124,10 +158,8 @@ namespace INFDTA011
                          .Where(p => p.Value.Any(c => c.UserId == neighbor.Key))
                          .SelectMany(p => p.Value)
                          .Where(c => c.ArticleId == articleId).First();
-
-                } catch(Exception e)
-                {
                 }
+                catch (Exception e) { }
                 decimal rating = user != null ? (decimal)user.Rating : 0;
                 decimal weightedRating = WeightedRating(influenceWeight, rating);
 
