@@ -1,5 +1,4 @@
-﻿
-using INFDTA011.Model;
+﻿using INFDTA011.Model;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -11,8 +10,7 @@ namespace INFDTA011
     {
         static void Main(string[] args)
         {
-            //new Main();
-            //new Assignment().PrintStepC();
+            Console.WriteLine("Druk op een toets op de applicatie te starten...");
             Console.ReadKey();
 
             IAlgorithm algorithm = new Cosine();
@@ -25,10 +23,25 @@ namespace INFDTA011
             {
                 decimal deci = algorithm.Calculate(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
 
-                Console.WriteLine("item:" + item.Key + ";Score:"+deci);
+                //Console.WriteLine("item:" + item.Key + ";Score:"+deci);
                 
             }
+
+            NearestNeighbor(1, userPreferences, new Cosine()).ToList().ForEach(x => Console.WriteLine(x.Value));
             Console.ReadKey();
+        }
+
+        public static Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, IAlgorithm algorithm)
+        {
+            Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
+
+            foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
+            {
+                decimal deci = Algorithm.Manhattan(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
+                nearestItemRatings.Add(item.Key, deci);
+            }
+        
+            return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
         }
     }
 }
