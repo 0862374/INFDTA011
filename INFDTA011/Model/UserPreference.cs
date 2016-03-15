@@ -29,8 +29,8 @@ namespace INFDTA011.Model
         private Dictionary<int, List<UserPreference>> GetAllUserPreferences()
         {
             Dictionary<int, List<UserPreference>> userPreferences = new Dictionary<int, List<UserPreference>>();
-            System.IO.StreamReader file = new System.IO.StreamReader(@"Data\userItem.data");
-            //System.IO.StreamReader file = new System.IO.StreamReader(@"Data\test4.data");
+            //System.IO.StreamReader file = new System.IO.StreamReader(@"Data\userItem.data");
+            System.IO.StreamReader file = new System.IO.StreamReader(@"Data\groupLens.data");
 
             string line;
             while ((line = file.ReadLine()) != null)

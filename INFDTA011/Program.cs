@@ -31,7 +31,7 @@ namespace INFDTA011
             //NearestNeighbor(1, userPreferences, new Cosine()).ToList().ForEach(x => Console.WriteLine(x.Value));
 
             IAssingment assignmet = new AssignmentOne();
-            assignmet.PrintStepF();
+            assignmet.PrintStepG();
             Console.ReadKey();
         }
 

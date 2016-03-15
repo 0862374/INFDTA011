@@ -69,7 +69,7 @@
     <None Include="Data\test.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Data\test3.data">
+    <None Include="Data\groupLens.data">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Data\userItem.data">

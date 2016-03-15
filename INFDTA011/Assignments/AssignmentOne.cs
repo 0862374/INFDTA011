@@ -128,22 +128,66 @@ namespace INFDTA011
             //List<int> articles
             Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
             Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userIdx, userPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
+            List<int> moviesSeen = new List<int>();
+            userPreferences.Where(x => x.Key == userIdx).ToList().ForEach(x => x.Value.ForEach(d => moviesSeen.Add(d.ArticleId)));
 
-            foreach(KeyValuePair < int, decimal> neighbor in nearestNeighbor)
+            List<int> notSeen = new List<int>();
+            foreach(KeyValuePair<int, decimal> neighbor in nearestNeighbor)
             {
-                foreach(KeyValuePair<int, List<UserPreference>> user in userPreferences.Where(x => x.Key == userIdx))
+                foreach(KeyValuePair<int, List<UserPreference>> values in userPreferences.Where(x => x.Key == neighbor.Key))
                 {
-                    foreach (KeyValuePair<int, List<UserPreference>> neightborItem in userPreferences.Where(x => x.Key == userIdx))
+                    foreach(UserPreference value in values.Value)
                     {
-                      
+                        if (!moviesSeen.Contains(value.ArticleId) && !notSeen.Contains(value.ArticleId))
+                        {
+                            notSeen.Add(value.ArticleId);
+                        }
                     }
                 }
             }
+
+            Dictionary<int, decimal> predictedMovies = new Dictionary<int, decimal>();
+            foreach(int movieId in notSeen)
+            {
+                predictedMovies.Add(movieId, PredictRate(userIdx, movieId, userPreferences));
+            }
+
+            predictedMovies.OrderByDescending(x => x.Value).ToDictionary(x=> x.Key, x => x.Value).ToList().ForEach(x => Console.WriteLine(x.Key +":"+ x.Value));
         }
 
         public void PrintStepG()
         {
-            throw new NotImplementedException();
+            int userIdx = 186;
+            Console.WriteLine("Stap F6a: Nearest Neighbor of user {0}:", userIdx);
+
+            //List<int> articles
+            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
+            Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userIdx, userPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
+            List<int> moviesSeen = new List<int>();
+            userPreferences.Where(x => x.Key == userIdx).ToList().ForEach(x => x.Value.ForEach(d => moviesSeen.Add(d.ArticleId)));
+
+            List<int> notSeen = new List<int>();
+            foreach (KeyValuePair<int, decimal> neighbor in nearestNeighbor)
+            {
+                foreach (KeyValuePair<int, List<UserPreference>> values in userPreferences.Where(x => x.Key == neighbor.Key))
+                {
+                    foreach (UserPreference value in values.Value)
+                    {
+                        if (!moviesSeen.Contains(value.ArticleId) && !notSeen.Contains(value.ArticleId))
+                        {
+                            notSeen.Add(value.ArticleId);
+                        }
+                    }
+                }
+            }
+
+            Dictionary<int, decimal> predictedMovies = new Dictionary<int, decimal>();
+            foreach (int movieId in notSeen)
+            {
+                predictedMovies.Add(movieId, PredictRate(userIdx, movieId, userPreferences));
+            }
+
+            predictedMovies.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Take(8).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + x.Value));
         }
 
         private Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, IAlgorithm algorithm)
