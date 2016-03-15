@@ -49,6 +49,7 @@ namespace INFDTA011
         {
             int userIdx = 7;
             int userIdy = 3;
+            int [] userItems = { 101, 103, 106 };
             Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
 
             Console.WriteLine("Stap 1: NearestNeightbor Pearson with user {0}:", userIdx);
@@ -63,6 +64,18 @@ namespace INFDTA011
             userIdx = 4;
             Console.WriteLine("Stap 2: Pearson coefficient between user {0} and {1}:", userIdy, userIdx);
             Console.WriteLine(new Pearson().Calculate(userPreferences.Where(x => x.Key == userIdy).First().Value, userPreferences.Where(x => x.Key == userIdx).First().Value));
+
+            userIdx = 7;
+            
+            Console.WriteLine("Stap 3: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[0]);
+            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences));
+
+            Console.WriteLine("Stap 3: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[1]);
+            Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences) + " " + userItems[1]);
+
+            Console.WriteLine("Stap 3: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[2]);
+            Console.WriteLine(PredictRate(userIdx, userItems[2], userPreferences));
+
 
 
             throw new NotImplementedException();
@@ -101,7 +114,8 @@ namespace INFDTA011
 
             foreach (KeyValuePair<int, decimal> neighbor in nearestNeighbor)
             {
-                decimal influenceWeight = InfluenceWeight(neighbor.Value, total_coefficient);
+
+                decimal influenceWeight = InfluenceWeight(Math.Abs(neighbor.Value), total_coefficient);
                 decimal rating = (decimal)UserPreferences.Where(x => x.Key == neighbor.Key).First().Value.First().Rating;
                 decimal weightedRating = WeightedRating(influenceWeight, rating);
 
