@@ -16,6 +16,14 @@ namespace INFDTA011
             this.decoratedAlgorithm = decoratedAlgorithm;
         }
 
+        public double treshhold
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             return decoratedAlgorithm.Calculate(ratingOne, ratingTwo);

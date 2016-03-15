@@ -47,6 +47,24 @@ namespace INFDTA011
 
         public void PrintStepE()
         {
+            int userIdx = 7;
+            int userIdy = 3;
+            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
+
+            Console.WriteLine("Stap 1: NearestNeightbor Pearson with user {0}:", userIdx);
+            NearestNeighbor(userIdx, userPreferences, new Pearson()).Where(x => Math.Abs(x.Value) >= (decimal)new Pearson().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
+
+            Console.WriteLine("Stap 1: NearestNeightbor Euclidean with user {0}:", userIdx);
+            NearestNeighbor(userIdx, userPreferences, new Euclidean()).Where(x => Math.Abs(x.Value) >= (decimal)new Euclidean().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
+
+            Console.WriteLine("Stap 1: NearestNeightbor Cosine with user {0}:", userIdx);
+            NearestNeighbor(userIdx, userPreferences, new Cosine()).Where(x => Math.Abs(x.Value) >= (decimal)new Cosine().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
+
+            userIdx = 4;
+            Console.WriteLine("Stap 2: Pearson coefficient between user {0} and {1}:", userIdy, userIdx);
+            Console.WriteLine(new Pearson().Calculate(userPreferences.Where(x => x.Key == userIdy).First().Value, userPreferences.Where(x => x.Key == userIdx).First().Value));
+
+
             throw new NotImplementedException();
         }
 
@@ -72,6 +90,8 @@ namespace INFDTA011
 
             return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
         }
+
+
 
         private decimal PredictRate(int userID , int itemID, Dictionary<int, List<UserPreference>> UserPreferences)
         {
