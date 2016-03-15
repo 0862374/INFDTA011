@@ -22,16 +22,18 @@ namespace INFDTA011.Algorithms
             {
                 if (ratingTwo.Where(x => x.ArticleId == ratingOne.ElementAt(i).ArticleId).Count() > 0)
                 {
-                    n++;
-                    double x = ratingOne.ElementAt(i).Rating;
-                    double y = ratingTwo.ElementAt(i).Rating;
+                    if (ratingOne.ElementAt(i) != null && ratingTwo.ElementAt(i) != null)
+                    { 
+                        n++;
+                        double x = ratingOne.ElementAt(i).Rating;
+                        double y = ratingTwo.ElementAt(i).Rating;
 
-                    sum_xy += x * y;
-                    sum_x += x;
-                    sum_y += y;
-                    sum_x2 += x * x;
-                    sum_y2 += y * y;
-
+                        sum_xy += x * y;
+                        sum_x += x;
+                        sum_y += y;
+                        sum_x2 += x * x;
+                        sum_y2 += y * y;
+                    }
                 }
             }
             if (n == 0)
