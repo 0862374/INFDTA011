@@ -39,8 +39,10 @@ namespace INFDTA011
          
         public void PrintStepD()
         {
-            PredictRate(2, 101, new UserPreference().UserPreferences);
-            throw new NotImplementedException();
+            int userId = 4;
+            int articleId = 101;
+            Console.WriteLine("Predicted Rating of user {0}: with article {1}", userId, articleId);
+            Console.WriteLine(PredictRate(userId, articleId, new UserPreference().UserPreferences));
         }
 
         public void PrintStepE()
@@ -74,13 +76,29 @@ namespace INFDTA011
         private decimal PredictRate(int userID , int itemID, Dictionary<int, List<UserPreference>> UserPreferences)
         {
             Dictionary<int, decimal> nearestNeighbor = NearestNeighbor(userID, UserPreferences, new Pearson()).Take(3).ToDictionary(x => x.Key, x => x.Value);
-           
-            foreach (KeyValuePair<int, List<UserPreference>> user in UserPreferences.Where(x => x.Key != userID))
-            {
+            decimal total_coefficient = Math.Abs(nearestNeighbor.Sum(x => x.Value));
+            decimal predictedRate = 0;
 
+            foreach (KeyValuePair<int, decimal> neighbor in nearestNeighbor)
+            {
+                decimal influenceWeight = InfluenceWeight(neighbor.Value, total_coefficient);
+                decimal rating = (decimal)UserPreferences.Where(x => x.Key == neighbor.Key).First().Value.First().Rating;
+                decimal weightedRating = WeightedRating(influenceWeight, rating);
+
+                predictedRate += weightedRating;
             }
-            return 0;
+            return Math.Abs(predictedRate);
         }
+
+        private decimal InfluenceWeight(decimal coefficient, decimal total_coefficient)
+        {
+            return coefficient / total_coefficient;
+        }
+        private decimal WeightedRating(decimal influenceweight, decimal rating)
+        {
+            return influenceweight * rating;
+        }
+
 
     }
 }

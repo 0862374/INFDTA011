@@ -23,13 +23,13 @@ namespace INFDTA011.Algorithms
                 if (ratingTwo.Where(x => x.ArticleId == ratingOne.ElementAt(i).ArticleId).Count() > 0)
                 {
 
-                    if (ratingOne.Count <= i && ratingTwo.Count <= i)
+                    if (i < ratingOne.Count  && i < ratingTwo.Count)
 
                     { 
                         n++;
                         double x = ratingOne.ElementAt(i).Rating;
                         double y = ratingTwo.ElementAt(i).Rating;
-
+                        
                         sum_xy += x * y;
                         sum_x += x;
                         sum_y += y;

@@ -16,7 +16,7 @@ namespace INFDTA011.Model
 
         private void SetRating(double rate)
         {
-            if (rate >= 1 && rate <= 5)
+            if (rate >= 0 && rate <= 5)
             {
                 this._rating = rate;
             }
