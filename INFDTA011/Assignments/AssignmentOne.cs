@@ -128,15 +128,17 @@ namespace INFDTA011
            
         public void PrintStepF()
         {
-
             int userIdx = 186;
             Console.WriteLine("Stap F: Computing the top 8 recommendations of user {0}:", userIdx);
 
+            // get all userpreferences and nearestneighbours
             Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
             Dictionary<int, double> nearestNeighbours = NearestNeighbour(userIdx, userPreferences, new Pearson()).Where(x => Math.Abs(x.Value) >= new Pearson().treshhold).OrderByDescending(x => x.Value).Take(25).ToDictionary(x => x.Key, x => x.Value);
+            // make an list of all movies seen by the user
             List<int> moviesSeen = new List<int>();
             userPreferences.Where(x => x.Key == userIdx).ToList().ForEach(x => x.Value.ForEach(d => moviesSeen.Add(d.ArticleId)));
 
+            // filter all the movies not seen by the user and put it in te notSeen list
             List<int> notSeen = new List<int>();
             foreach(KeyValuePair<int, double> neighbor in nearestNeighbours)
             {
@@ -152,6 +154,7 @@ namespace INFDTA011
                 }
             }
 
+            // predict ratings for the movies
             Dictionary<int, double> predictedMovies = new Dictionary<int, double>();
             foreach(int movieId in notSeen)
             {
@@ -255,6 +258,7 @@ namespace INFDTA011
 
         private double PredictRate(int userId , int articleId, Dictionary<int, List<UserPreference>> UserPreferences, Dictionary<int, double> nearestNeighbours)
         {
+            // filter all the nearestneighbours who rated the movie
             Dictionary<int, double> nearestNeighboursRatedArticle = nearestNeighbours.Where(x => UserPreferences
                        .Where(p => p.Value.Any(c => c.UserId == x.Key))
                        .SelectMany(p => p.Value)
