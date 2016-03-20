@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using INFDTA011.Model;
 
 namespace INFDTA011.Algorithms
@@ -17,7 +15,7 @@ namespace INFDTA011.Algorithms
             }
         }
 
-        public decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
+        public double Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             double sum_xy = 0;
             double sum_x = 0;
@@ -59,7 +57,7 @@ namespace INFDTA011.Algorithms
             }
             else
             {
-                return (decimal)((sum_xy - (sum_x * sum_y) / n) / denomimator);
+                return (double)((sum_xy - (sum_x * sum_y) / n) / denomimator);
             }
         }
     }

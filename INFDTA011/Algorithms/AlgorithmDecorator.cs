@@ -24,7 +24,7 @@ namespace INFDTA011
             }
         }
 
-        public decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
+        public double Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             return decoratedAlgorithm.Calculate(ratingOne, ratingTwo);
         }
