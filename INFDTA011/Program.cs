@@ -11,41 +11,58 @@ namespace INFDTA011
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Druk op een toets op de applicatie te starten...");
-            Console.ReadKey();
-
-            IAlgorithm algorithm = new Cosine();
-            UserPreference userPreference = new UserPreference();
-            Dictionary<int, List<UserPreference>> userPreferences = userPreference.UserPreferences;
-
-            int userId = 1;
-
-            foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
-            {
-                decimal deci = algorithm.Calculate(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
-
-                //Console.WriteLine("item:" + item.Key + ";Score:"+deci);
-                
-            }
-
-            //NearestNeighbor(1, userPreferences, new Cosine()).ToList().ForEach(x => Console.WriteLine(x.Value));
-
+            StartConsole();
+           
+            
             IAssingment assignmet = new AssignmentOne();
-            assignmet.PrintStepG();
+
+            assignmet.PrintStepB();
             Console.ReadKey();
         }
 
-        public static Dictionary<int, decimal> NearestNeighbor(int userId, Dictionary<int, List<UserPreference>> userPreferences, IAlgorithm algorithm)
+        static void StartConsole()
         {
-            Dictionary<int, decimal> nearestItemRatings = new Dictionary<int, decimal>();
+            Console.WriteLine("Welcome, choose an character to start the application:");
+            Console.WriteLine("[A] Step A Build a TreeMap/Dictionary structure to contain user preferences");
+            Console.WriteLine("[B] Step B Import the userItem.data dataset into such structure.");
+            Console.WriteLine("[C] Step C Build a TreeMap/Dictionary structure to contain user preferences");
+            Console.WriteLine("[D] Step D Import the userItem.data dataset into such structure.");
+            Console.WriteLine("[E] Step E Build a TreeMap/Dictionary structure to contain user preferences");
+            Console.WriteLine("[F] Step F Import the userItem.data dataset into such structure.");
+            ConsoleKeyInfo keyPressed = Console.ReadKey();
 
-            foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences.Where(x => x.Key != userId))
+            IAssingment assignment = new AssignmentOne();
+
+            switch (keyPressed.KeyChar)
             {
-                decimal deci = Algorithm.Manhattan(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
-                nearestItemRatings.Add(item.Key, deci);
+                case 'a':
+                    assignment.PrintStepA();
+                    break;
+                case 'b':
+                    assignment.PrintStepB();
+                    break;
+                case 'c':
+                    assignment.PrintStepC();
+                    break;
+                case 'd':
+                    assignment.PrintStepD();
+                    break;
+                case 'e':
+                    assignment.PrintStepE();
+                    break;
+                case 'f':
+                    assignment.PrintStepF();
+                    break;
+                case 'g':
+                    assignment.PrintStepG();
+                    break;
             }
-        
-            return nearestItemRatings.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
+
+            Console.WriteLine("Click on a button to reselect an option.");
+            Console.ReadKey();
+            StartConsole();
         }
+
+        
     }
 }

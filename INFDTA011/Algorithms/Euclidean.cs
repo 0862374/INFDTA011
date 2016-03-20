@@ -15,18 +15,18 @@ namespace INFDTA011
             }
         }
 
-        public decimal Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
+        public double Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
-            decimal distance = 0;
+            double distance = 0;
 
             foreach (UserPreference rateOne in ratingOne)
             {
                 foreach (UserPreference rateTwo in ratingTwo.Where(x => x.ArticleId == rateOne.ArticleId))
                 {
-                    distance += (decimal)Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
+                    distance += Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
                 }
             }
-            return (decimal)Math.Sqrt((double)distance);
+            return Math.Sqrt(distance);
         }
     }
 }

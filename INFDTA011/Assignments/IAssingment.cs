@@ -15,5 +15,6 @@ namespace INFDTA011.Assignments
         void PrintStepE();
         void PrintStepF();
         void PrintStepG();
+        void PrintStepH();
     }
 }

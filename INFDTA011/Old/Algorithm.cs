@@ -9,21 +9,21 @@ namespace INFDTA011
 {
     class Algorithm
     {
-        public static decimal Euclidean(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
+        public static double Euclidean(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
-            decimal distance = 0;
+            double distance = 0;
 
             foreach (UserPreference rateOne in ratingOne)
             {
                 foreach (UserPreference rateTwo in ratingTwo.Where(x => x.ArticleId == rateOne.ArticleId))
                 {
-                    distance += (decimal)Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
+                    distance += (double)Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
                 }
             }
-            return (decimal)Math.Sqrt((double)distance);
+            return (double)Math.Sqrt((double)distance);
         }
 
-        public static decimal Cosine(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
+        public static double Cosine(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             /*
             //cos(x, y) x = ( sum of all ratings of first user in respect of the articleids) 
@@ -33,7 +33,7 @@ namespace INFDTA011
             // cos of x . y =  (4.a * 4.e 4.b * 2.f 1.c * 3.g ,3.d * 5.h) = 42 / x * y(154 = cos similarity of(0.27)
             */
 
-            decimal distance = 0;
+            double distance = 0;
 
             foreach (UserPreference rateOne in ratingOne)
             {
@@ -41,21 +41,21 @@ namespace INFDTA011
                 foreach (UserPreference rateTwo in ratingTwo.Where(x => x.ArticleId == rateOne.ArticleId))
                 {
 
-                    distance += (decimal)Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
+                    distance += (double)Math.Pow(rateOne.Rating - rateTwo.Rating, 2);
                 }
             }
-            return (decimal)Math.Sqrt((double)distance);
+            return (double)Math.Sqrt((double)distance);
         }
 
-        public static decimal Manhattan(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
+        public static double Manhattan(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
-            decimal distance = 0;
+            double distance = 0;
 
             foreach (UserPreference rateOne in ratingOne)
             {
                 foreach (UserPreference rateTwo in ratingTwo.Where(x => x.ArticleId == rateOne.ArticleId))
                 {
-                    distance += Math.Abs((decimal)(rateOne.Rating - rateTwo.Rating));
+                    distance += Math.Abs((double)(rateOne.Rating - rateTwo.Rating));
                 }
             }
 
