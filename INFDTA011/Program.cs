@@ -25,10 +25,12 @@ namespace INFDTA011
             Console.WriteLine("Welcome, choose an character to start the application:");
             Console.WriteLine("[A] Step A Build a TreeMap/Dictionary structure to contain user preferences");
             Console.WriteLine("[B] Step B Import the userItem.data dataset into such structure.");
-            Console.WriteLine("[C] Step C Build a TreeMap/Dictionary structure to contain user preferences");
-            Console.WriteLine("[D] Step D Import the userItem.data dataset into such structure.");
-            Console.WriteLine("[E] Step E Build a TreeMap/Dictionary structure to contain user preferences");
-            Console.WriteLine("[F] Step F Import the userItem.data dataset into such structure.");
+            Console.WriteLine("[C] Step C Implement the nearest neighbours algorithm");
+            Console.WriteLine("[D] Step D implement the comoputation of the predicted rating.");
+            Console.WriteLine("[E] Step E Apply the algorithm to the small dataset imported at point B.");
+            Console.WriteLine("[F] Step F Implement the computation of the n top recommendations for a user.");
+            Console.WriteLine("[G] Step G import the MovieLens 100k dataset.");
+            Console.WriteLine("[H] Step H Implement the computation of the n top recommendations for a user with prediction 3.");
             ConsoleKeyInfo keyPressed = Console.ReadKey();
 
             IAssingment assignment = new AssignmentOne();
@@ -55,6 +57,9 @@ namespace INFDTA011
                     break;
                 case 'g':
                     assignment.PrintStepG();
+                    break;
+                case 'h':
+                    assignment.PrintStepH();
                     break;
             }
 
