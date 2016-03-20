@@ -15,7 +15,7 @@ namespace INFDTA011.Model
         public Dictionary<int, List<UserPreference>> UserPreferences { get { if (_userPreferences == null) { _userPreferences = GetAllUserPreferences(); } return _userPreferences; } set { _userPreferences = GetAllUserPreferences(); } }
         Dictionary<int, List<UserPreference>> _userPreferences;
 
-        // Fills the _rating and throws an exeption if the rate is not between 0 and 5
+        // Fills the _rating and throws an exeption if the rate is not between 1 and 5
         private void SetRating(float rate)
         {
             if (rate >= 1 && rate <= 5)
