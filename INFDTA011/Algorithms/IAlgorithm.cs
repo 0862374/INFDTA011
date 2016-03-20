@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace INFDTA011
 {
+    //Interface of Algorithms which explicitly forces this body structure for all algorithms
     interface IAlgorithm
     {
         double treshhold { get; }
