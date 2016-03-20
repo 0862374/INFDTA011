@@ -11,10 +11,11 @@ namespace INFDTA011
         {
             get
             {
+                //placeholder for the threshold used in various calculations we then only have to get the threshold needed.
                 return 0.35;
             }
         }
-
+        // implemented from the IAlgorithm interface so that the algorithms are generic
         public double Calculate(List<UserPreference> ratingOne, List<UserPreference> ratingTwo)
         {
             double distance = 0;
