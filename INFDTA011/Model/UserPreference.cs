@@ -18,7 +18,7 @@ namespace INFDTA011.Model
         // Fills the _rating and throws an exeption if the rate is not between 0 and 5
         private void SetRating(float rate)
         {
-            if (rate >= 0 && rate <= 5)
+            if (rate >= 1 && rate <= 5)
             {
                 this._rating = rate;
             }
