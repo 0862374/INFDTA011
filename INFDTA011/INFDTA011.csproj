@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assignments\AssignmentTwo.cs" />
     <Compile Include="Assignments\IAssingment.cs" />
     <Compile Include="Old\Algorithm.cs" />
     <Compile Include="Algorithms\AlgorithmDecorator.cs" />
