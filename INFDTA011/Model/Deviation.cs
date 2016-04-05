@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace INFDTA011.Model
 {
-    class Deviation
+    class Deviaation
     {
         public int ArticleOne { get; set; } = 0;
         public int ArticleTwo { get; set; } = 0;
         public double Difference { get; set; } = 0;
-        public int items { get; set; } = 0;
+        public int Items { get; set; } = 0;
     }
 }

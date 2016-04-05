@@ -35,8 +35,15 @@ namespace INFDTA011
 
             Console.WriteLine("Reading files...");
             var userPreferences = new UserPreference().UserPreferences;
+
             Console.WriteLine("Calculating deviationmatrix...");
-            var deviationMatrix = CalculateDeviationMatrix(userPreferences);
+            // create an list with all articles wich are rated by the user
+            List<int> articlesRated = new List<int>();
+            userPreferences.Where(x => x.Key == userId).ToList().ForEach(x => x.Value.ForEach(d => articlesRated.Add(d.ArticleId)));
+
+            // create an list with all articles wich are not rated by the user
+            List<int> articlesNotRated = GetArticlesNotRated(userId, userPreferences, articlesRated);
+            var deviationMatrix = CalculateDeviationMatrix(userPreferences, articlesNotRated);
 
             Console.WriteLine("Creating recommendations...");
             var topRecommendations = CalculateTopRecommendations(userId, userPreferences, deviationMatrix, 5);
@@ -140,63 +147,75 @@ namespace INFDTA011
             int items = 0;
             foreach (var userPreference in userPreferences.Where(x => x.Key == userId).First().Value)
             {
-                Deviation deviation = deviationMatrix.Deviations.Where(x => x.ArticleOne == articleId && x.ArticleTwo == userPreference.ArticleId).First();
+                try {
+                    DeviationMatrix.Deviation deviation = deviationMatrix.Deviations.Where(x => x.ArticleOne == articleId && x.ArticleTwo == userPreference.ArticleId).First();
 
-                calculation += ((userPreference.Rating + deviation.Difference) * deviation.items);
-                items += deviation.items;
+                    calculation += ((userPreference.Rating + deviation.Difference) * deviation.Items);
+                    items += deviation.Items;
+                }
+                catch (Exception e) { }
             }
 
             double rating = (calculation / items);
 
             return rating;
         }
-        
-        private DeviationMatrix CalculateDeviationMatrix(Dictionary<int, List<UserPreference>> userPreferences)
+
+        private DeviationMatrix CalculateDeviationMatrix(Dictionary<int, List<UserPreference>> userPreferences, List<int> articlesNotRated = null)
         {
             DeviationMatrix deviationMatrix = new DeviationMatrix();
-            var articles = deviationMatrix.GetArticleIds(userPreferences).Distinct().ToList();
+            List<int> articles;
+            var allArticles = deviationMatrix.GetArticleIds(userPreferences).Distinct().ToList();
             List<int> deviationsAlreadyCalculated = new List<int>();
 
-            Parallel.ForEach(articles, (article) =>
+            if(articlesNotRated == null)
+            {
+                articles = deviationMatrix.GetArticleIds(userPreferences).Distinct().ToList();
+            } else
+            {
+                articles = articlesNotRated;
+            }
+
+            /*Parallel.ForEach(articles, (article) =>
             {
                 if (deviationsAlreadyCalculated.Where(x => x == article).Count() > 0)
                 {
                     deviationMatrix.Deviations.Where(x => x.ArticleTwo == article).ToList().
                         ForEach(x => deviationMatrix.Deviations.Add(
-                            new Deviation
+                            new DeviationMatrix.Deviation
                             {
                                 ArticleOne = x.ArticleTwo,
                                 ArticleTwo = x.ArticleOne,
                                 Difference = Math.Abs(x.Difference),
-                                items = x.items
+                                Items = x.Items
                             }));
                 }
                 else {
-                    articles.Where(i => i != article).ToList().ForEach(x => deviationMatrix.Deviations.Add(deviationMatrix.CalculateDeviation(userPreferences, article, x)));
+                    allArticles.Where(i => i != article).ToList().ForEach(x => deviationMatrix.Deviations.Add(deviationMatrix.CalculateDeviation(userPreferences, article, x)));
                     deviationsAlreadyCalculated.Add(article);
                 }
-            });
+            });*/
 
             // calculate the deviation for every article
-            /*foreach (int article in articles)
+            foreach (int article in articles)
             {
                 if (deviationsAlreadyCalculated.Where(x => x == article).Count() > 0)
                 {
                     deviationMatrix.Deviations.Where(x => x.ArticleTwo == article).ToList().
                         ForEach(x => deviationMatrix.Deviations.Add(
-                            new Deviation
+                            new DeviationMatrix.Deviation
                             {
                                 ArticleOne = x.ArticleTwo,
                                 ArticleTwo = x.ArticleOne,
                                 Difference = Math.Abs(x.Difference),
-                                items = x.items
+                                Items = x.Items
                             }));
                 }
                 else {
-                    articles.Where(i => i != article).ToList().ForEach(x => deviationMatrix.Deviations.Add(deviationMatrix.CalculateDeviation(userPreferences, article, x)));
+                    allArticles.Where(i => i != article).ToList().ForEach(x => deviationMatrix.Deviations.Add(deviationMatrix.CalculateDeviation(userPreferences, article, x)));
                     deviationsAlreadyCalculated.Add(article);
                 }
-            }*/
+            }
 
             return deviationMatrix;
         }

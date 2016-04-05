@@ -8,11 +8,18 @@ namespace INFDTA011.Model
 {
     class DeviationMatrix
     {
+        public struct Deviation
+        {
+            public int ArticleOne;
+            public int ArticleTwo;
+            public double Difference;
+            public int Items;
+        }
         public List<Deviation> Deviations { get; set; } = new List<Deviation>();
 
         public void UpdateDeviationMatrix(List<Deviation> deviations, Dictionary<int, List<UserPreference>> userPreferences, int articleId)
         {
-            DeviationMatrix deviationMatrix = new DeviationMatrix();
+            /*DeviationMatrix deviationMatrix = new DeviationMatrix();
             var articles = deviationMatrix.GetArticleIds(userPreferences).Distinct().ToList();
 
             // calculate the deviation for every article
@@ -25,8 +32,8 @@ namespace INFDTA011.Model
             {
                 Deviation tempDeviation = CalculateDeviation(userPreferences, deviation.ArticleOne, deviation.ArticleTwo);
                 Deviations.Where(x => x.ArticleOne == deviation.ArticleOne && x.ArticleTwo == deviation.ArticleTwo).First().Difference = tempDeviation.Difference;
-                Deviations.Where(x => x.ArticleOne == deviation.ArticleOne && x.ArticleTwo == deviation.ArticleTwo).First().items = tempDeviation.items;
-            }
+                Deviations.Where(x => x.ArticleOne == deviation.ArticleOne && x.ArticleTwo == deviation.ArticleTwo).First().Items = tempDeviation.Items;
+            }*/
             
         }
 
@@ -39,7 +46,7 @@ namespace INFDTA011.Model
             if (articleOne == articleTwo)
             {
                 deviation.Difference = 0;
-                deviation.items = 0;
+                deviation.Items = 0;
 
                 return deviation;
             }
@@ -50,14 +57,14 @@ namespace INFDTA011.Model
                 {
                     double ratingOne = item.Value.Where(x => x.ArticleId == articleOne).First().Rating;
                     double ratingTwo = item.Value.Where(x => x.ArticleId == articleTwo).First().Rating;
-                    deviation.items++;
+                    deviation.Items++;
 
                     deviation.Difference += (ratingOne - ratingTwo);
 
                 }
             }
 
-            deviation.Difference = (deviation.Difference / deviation.items);
+            deviation.Difference = (deviation.Difference / deviation.Items);
             return deviation;
         }
 
