@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using System.Threading;
+using System.Threading.Tasks;
+using System.Drawing;
+
 
 namespace INFDTA011
 {
@@ -12,311 +16,190 @@ namespace INFDTA011
     {
         public void PrintStepA()
         {
-            Deviation(new UserPreference().UserPreferences, 101, 103);
-            //String stepText = new UserPreference().UserPreferences.ToString();
-            //Console.WriteLine(stepText);
+            // user and article to calculate rating for
+            int userId = 7;
+            int articleId = 106;
+
+            var userPreferences = new UserPreference().UserPreferences;
+            var deviationMatrix = CalculateDeviationMatrix(userPreferences);
+
+            double rating = PredictRate(deviationMatrix, userId, articleId, userPreferences);
+
+            Console.WriteLine("Rating for user {0} with article {1}: {2}", userId, articleId, rating);
         }
 
         public void PrintStepB()
         {
-            new UserPreference().UserPreferences.ToList().ForEach(x => x.Value.ForEach(y => Console.WriteLine("Key: " + x.Key + "; ArticleId: " + y.ArticleId + "; Rating: " + y.Rating)));
+            // user and article to calculate rating for
+            int userId = 186;
+
+            Console.WriteLine("Reading files...");
+            var userPreferences = new UserPreference().UserPreferences;
+            Console.WriteLine("Calculating deviationmatrix...");
+            var deviationMatrix = CalculateDeviationMatrix(userPreferences);
+
+            Console.WriteLine("Creating recommendations...");
+            var topRecommendations = CalculateTopRecommendations(userId, userPreferences, deviationMatrix, 5);
+
+            foreach(var recommendation in topRecommendations)
+            {
+                Console.WriteLine("Rating for user {0} with article {1}: {2}", userId, recommendation.Key, recommendation.Value);
+            }
+            
         }
 
         public void PrintStepC()
         {
-            int userId = 1;
+            // user and article to calculate rating for
+            int userId = 7;
 
-            Console.WriteLine("NearestNeightbor Pearson with user {0}:", userId);
-            Console.WriteLine(NearestNeighbour(userId, new UserPreference().UserPreferences, new Pearson()).First());
+            var userPreferences = new UserPreference().UserPreferences;
+            var deviationMatrix = CalculateDeviationMatrix(userPreferences);
 
-            Console.WriteLine("NearestNeightbor Euclidean with user {0}:", userId);
-            Console.WriteLine(NearestNeighbour(userId, new UserPreference().UserPreferences, new Euclidean()).First());
+            userPreferences.Where(x => x.Key == 3).First().Value.Add(new UserPreference { ArticleId = 105, Rating = 4, UserId = 3 });
+            deviationMatrix.UpdateDeviationMatrix(deviationMatrix.Deviations, userPreferences, 105);
 
-            Console.WriteLine("NearestNeightbor Cosine with user {0}:", userId);
-            Console.WriteLine(NearestNeighbour(userId, new UserPreference().UserPreferences, new Cosine()).First());
+            var topRecommendations = CalculateTopRecommendations(userId, userPreferences, deviationMatrix, 30);
+
+            foreach (var recommendation in topRecommendations)
+            {
+                Console.WriteLine("Rating for user {0} with article {1}: {2}", userId, recommendation.Key, recommendation.Value);
+            }
         }
         
-         
         public void PrintStepD()
         {
-            int userId = 4;
-            int articleId = 101;
-            Console.WriteLine("Predicted Rating of user {0}: with article {1}", userId, articleId);
-            Dictionary<int, double> nearestNeighbours = NearestNeighbour(userId, new UserPreference().UserPreferences, new Pearson()).OrderByDescending(x => x.Value).Take(25).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userId, articleId, new UserPreference().UserPreferences, nearestNeighbours));
+            throw new NotImplementedException();
         }
 
         public void PrintStepE()
         {
-            int userIdx = 7;
-            int userIdy = 3;
-            int[] userItems = { 101, 103, 106 };
-            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
-            Console.WriteLine("-------------------------------------------------------------------------------");
-            Console.WriteLine("Stap 1a: NearestNeightbor Pearson with user {0}:", userIdx);
-            NearestNeighbour(userIdx, userPreferences, new Pearson()).Where(x => Math.Abs(x.Value) >= (double)new Pearson().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
-
-            Console.WriteLine("Stap 1b: NearestNeightbor Euclidean with user {0}:", userIdx);
-            NearestNeighbour(userIdx, userPreferences, new Euclidean()).Where(x => Math.Abs(x.Value) >= (double)new Euclidean().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
-
-            Console.WriteLine("Stap 1c: NearestNeightbor Cosine with user {0}:", userIdx);
-            NearestNeighbour(userIdx, userPreferences, new Cosine()).Where(x => Math.Abs(x.Value) >= (double)new Cosine().treshhold).Take(3).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + Math.Abs(x.Value)));
-
-            Console.WriteLine("--------------------------------------------------------------------------------");
-
-            userIdx = 4;
-            Console.WriteLine("Stap 2: Pearson coefficient between user {0} and {1}:", userIdy, userIdx);
-            Console.WriteLine(new Pearson().Calculate(userPreferences.Where(x => x.Key == userIdy).First().Value, userPreferences.Where(x => x.Key == userIdx).First().Value));
-
-            Console.WriteLine("--------------------------------------------------------------------------------");
-            userIdx = 7;
-
-            Console.WriteLine("Stap 3a: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[0]);
-            Dictionary<int, double> nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[0]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("Stap 3b: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[1]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[1]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("Stap 3c: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[2]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[2]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[2], userPreferences, nearestNeighbours));
-            Console.WriteLine("--------------------------------------------------------------------------------");
-            userIdx = 4;
-            Console.WriteLine("Stap 4: Pearson Predicted Rating of nearest Neighbor of user {0} with item {1}:", userIdx, userItems[0]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[0]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("--------------------------------------------------------------------------------");
-
-            userIdx = 7;
-            UserPreference item = new UserPreference { UserId = userIdx, ArticleId = userItems[2], Rating = 2.8f };
-            if (userPreferences.ContainsKey(item.UserId))
-            {
-                userPreferences.Where(x => x.Key == item.UserId).First().Value.Add(item);
-            }
-            else
-            {
-                userPreferences.Add(item.UserId, new List<UserPreference> { item });
-            }
-            Console.WriteLine("Stap 5a: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 2.8:", userIdx, userItems[0]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[0]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("Stap 5b: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 2.8 :", userIdx, userItems[1]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[1]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("--------------------------------------------------------------------------------");
-            userPreferences
-                         .Where(p => p.Value.Any(c => c.UserId == userIdx))
-                         .SelectMany(p => p.Value)
-                         .Where(c => c.ArticleId == userItems[2]).First().Rating = 5;
-            Console.WriteLine("Stap 6a: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 5 :", userIdx, userItems[0]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[0]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[0], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("Stap 6b: Pearson Predicted Rating of nearest Neighbor of user {0} with article {1} and rating 5 :", userIdx, userItems[1]);
-            nearestNeighbours = NearestNeighbour(userIdx, new UserPreference().UserPreferences, new Pearson(), userItems[1]).OrderByDescending(x => x.Value).Take(3).ToDictionary(x => x.Key, x => x.Value);
-            Console.WriteLine(PredictRate(userIdx, userItems[1], userPreferences, nearestNeighbours));
-
-            Console.WriteLine("--------------------------------------------------------------------------------");
-
-
-
+            throw new NotImplementedException();
         }
            
         public void PrintStepF()
         {
-            int userIdx = 186;
-            Console.WriteLine("Stap F: Computing the top 8 recommendations of user {0}:", userIdx);
-
-            // get all userpreferences and nearestneighbours
-            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
-            Dictionary<int, double> nearestNeighbours = NearestNeighbour(userIdx, userPreferences, new Pearson()).Where(x => Math.Abs(x.Value) >= new Pearson().treshhold).OrderByDescending(x => x.Value).Take(25).ToDictionary(x => x.Key, x => x.Value);
-            // make an list of all movies seen by the user
-            List<int> moviesSeen = new List<int>();
-            userPreferences.Where(x => x.Key == userIdx).ToList().ForEach(x => x.Value.ForEach(d => moviesSeen.Add(d.ArticleId)));
-
-            // filter all the movies not seen by the user and put it in te notSeen list
-            List<int> notSeen = new List<int>();
-            foreach(KeyValuePair<int, double> neighbor in nearestNeighbours)
-            {
-                foreach(KeyValuePair<int, List<UserPreference>> values in userPreferences.Where(x => x.Key == neighbor.Key))
-                {
-                    foreach(UserPreference value in values.Value)
-                    {
-                        if (!moviesSeen.Contains(value.ArticleId) && !notSeen.Contains(value.ArticleId))
-                        {
-                            notSeen.Add(value.ArticleId);
-                        }
-                    }
-                }
-            }
-
-            // predict ratings for the movies
-            Dictionary<int, double> predictedMovies = new Dictionary<int, double>();
-            foreach(int movieId in notSeen)
-            {
-                predictedMovies.Add(movieId, PredictRate(userIdx, movieId, userPreferences, nearestNeighbours));
-            }
-
-            predictedMovies.OrderByDescending(x => x.Value).Take(8).ToDictionary(x=> x.Key, x => x.Value).ToList().ForEach(x => Console.WriteLine(x.Key +":"+ x.Value));
+            throw new NotImplementedException();
         }
 
         public void PrintStepG()
         {
-            int userIdx = 186;
-            Console.WriteLine("Stap G: user {0}:", userIdx);
-            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
-            Dictionary<int, double> nearestNeighbours = NearestNeighbour(userIdx, userPreferences, new Pearson()).ToDictionary(x => x.Key, x => x.Value);
-            List<int> moviesSeen = new List<int>();
-            userPreferences.Where(x => x.Key == userIdx).ToList().ForEach(x => x.Value.ForEach(d => moviesSeen.Add(d.ArticleId)));
-
-            List<int> notSeen = new List<int>();
-            foreach (KeyValuePair<int, double> neighbor in nearestNeighbours.OrderByDescending(x => x.Value).Take(25).ToDictionary(k => k.Key, k => k.Value))
-            {
-                foreach (KeyValuePair<int, List<UserPreference>> values in userPreferences.Where(x => x.Key == neighbor.Key))
-                {
-                    foreach (UserPreference value in values.Value)
-                    {
-                        if (!moviesSeen.Contains(value.ArticleId) && !notSeen.Contains(value.ArticleId))
-                        {
-                            notSeen.Add(value.ArticleId);
-                        }
-                    }
-                }
-            }
-
-            Dictionary<int, double> predictedMovies = new Dictionary<int, double>();
-            foreach (int movieId in notSeen)
-            {
-                predictedMovies.Add(movieId, PredictRate(userIdx, movieId, userPreferences, nearestNeighbours));
-            }
-
-            predictedMovies.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value).Take(8).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + x.Value));
+            throw new NotImplementedException();
         }
-
         public void PrintStepH()
         {
-            int userIdx = 186;
-            Console.WriteLine("Stap F: Computing the top 8 recommendations of user {0}:", userIdx);
+            throw new NotImplementedException();
+        }
 
-            Dictionary<int, List<UserPreference>> userPreferences = new UserPreference().UserPreferences;
-            Dictionary<int, double> nearestNeighbours = NearestNeighbour(userIdx, userPreferences, new Pearson()).Where(x => Math.Abs(x.Value) >= new Pearson().treshhold).OrderByDescending(x => x.Value).Take(25).ToDictionary(x => x.Key, x => x.Value);
+        private Dictionary<int, double> CalculateTopRecommendations(int userId, Dictionary<int, List<UserPreference>> userPreferences, DeviationMatrix deviationMatrix, int topN = 1)
+        {
+            // create an list with all articles wich are rated by the user
+            List<int> articlesRated = new List<int>();
+            userPreferences.Where(x => x.Key == userId).ToList().ForEach(x => x.Value.ForEach(d => articlesRated.Add(d.ArticleId)));
 
-            List<int> moviesSeen = new List<int>();
-            userPreferences.Where(x => x.Key == userIdx).ToList().ForEach(x => x.Value.ForEach(d => moviesSeen.Add(d.ArticleId)));
+            // create an list with all articles wich are not rated by the user
+            List<int> articlesNotRated = GetArticlesNotRated(userId, userPreferences, articlesRated);
 
-            List<int> notSeen = new List<int>();
-            foreach (KeyValuePair<int, double> neighbor in nearestNeighbours)
+            // predict the ratings of the articles
+            Dictionary<int, double> predictedArticles = new Dictionary<int, double>();
+            foreach (int articleId in articlesNotRated)
             {
-                foreach (KeyValuePair<int, List<UserPreference>> values in userPreferences.Where(x => x.Key == neighbor.Key))
+                predictedArticles.Add(articleId, PredictRate(deviationMatrix, userId, articleId, userPreferences));
+            }
+
+            // return the predicted rates ordered by rating descending and take the topN items
+            return predictedArticles.OrderByDescending(x => x.Value).Take(topN).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private List<int> GetArticlesNotRated(int userId, Dictionary<int, List<UserPreference>> userPreferences, List<int> articlesRated)
+        {
+            List<int> articlesnotRated = new List<int>();
+
+            foreach (var user in userPreferences)
+            {
+                foreach (var values in userPreferences.Where(x => x.Key == user.Key))
                 {
                     foreach (UserPreference value in values.Value)
                     {
-                        if (!moviesSeen.Contains(value.ArticleId) && !notSeen.Contains(value.ArticleId))
+                        // if article not rated and not already in list then add to list
+                        if (!articlesRated.Contains(value.ArticleId) && !articlesnotRated.Contains(value.ArticleId))
                         {
-                            notSeen.Add(value.ArticleId);
+                            articlesnotRated.Add(value.ArticleId);
                         }
                     }
                 }
             }
 
-            Dictionary<int, double> predictedMovies = new Dictionary<int, double>();
-            foreach (int movieId in notSeen)
-            {
-                Dictionary<int, double> nearestNeighboursRatedArticle = nearestNeighbours.Where(x => userPreferences
-                       .Where(p => p.Value.Any(c => c.UserId == x.Key))
-                       .SelectMany(p => p.Value)
-                       .Where(c => c.ArticleId == movieId).Count() > 0).ToDictionary(d => d.Key, d => d.Value);
+            return articlesnotRated;
+        }
 
-                if (nearestNeighboursRatedArticle.Count() >= 3)
+        private double PredictRate(DeviationMatrix deviationMatrix, int userId, int articleId, Dictionary<int, List<UserPreference>> userPreferences)
+        {
+            // predict rating
+            double calculation = 0;
+            int items = 0;
+            foreach (var userPreference in userPreferences.Where(x => x.Key == userId).First().Value)
+            {
+                Deviation deviation = deviationMatrix.Deviations.Where(x => x.ArticleOne == articleId && x.ArticleTwo == userPreference.ArticleId).First();
+
+                calculation += ((userPreference.Rating + deviation.Difference) * deviation.items);
+                items += deviation.items;
+            }
+
+            double rating = (calculation / items);
+
+            return rating;
+        }
+        
+        private DeviationMatrix CalculateDeviationMatrix(Dictionary<int, List<UserPreference>> userPreferences)
+        {
+            DeviationMatrix deviationMatrix = new DeviationMatrix();
+            var articles = deviationMatrix.GetArticleIds(userPreferences).Distinct().ToList();
+            List<int> deviationsAlreadyCalculated = new List<int>();
+
+            Parallel.ForEach(articles, (article) =>
+            {
+                if (deviationsAlreadyCalculated.Where(x => x == article).Count() > 0)
                 {
-                    predictedMovies.Add(movieId, PredictRate(userIdx, movieId, userPreferences, nearestNeighboursRatedArticle));
+                    deviationMatrix.Deviations.Where(x => x.ArticleTwo == article).ToList().
+                        ForEach(x => deviationMatrix.Deviations.Add(
+                            new Deviation
+                            {
+                                ArticleOne = x.ArticleTwo,
+                                ArticleTwo = x.ArticleOne,
+                                Difference = Math.Abs(x.Difference),
+                                items = x.items
+                            }));
                 }
-            }
+                else {
+                    articles.Where(i => i != article).ToList().ForEach(x => deviationMatrix.Deviations.Add(deviationMatrix.CalculateDeviation(userPreferences, article, x)));
+                    deviationsAlreadyCalculated.Add(article);
+                }
+            });
 
-            predictedMovies.OrderByDescending(x => x.Value).Take(8).ToDictionary(x => x.Key, x => x.Value).ToList().ForEach(x => Console.WriteLine(x.Key + ":" + x.Value));
-        }
-
-        private Dictionary<int, double> NearestNeighbour(int userId, Dictionary<int, List<UserPreference>> userPreferences, IAlgorithm algorithm, int articleId = 0)
-        {
-            Dictionary<int, double> neighbour = new Dictionary<int, double>();
-
-            // if articleId is zero then get all the nearestneighbours else get the nearestneighbours which also rated the article
-            Dictionary<int, List<UserPreference>>  filteredUserPreferences = (articleId == 0) ? userPreferences.Where(x => x.Key != userId).ToDictionary(d => d.Key, d=> d.Value) : userPreferences.Where(x => x.Key != userId && x.Value.Where(y => y.ArticleId == articleId).Count() > 0).ToDictionary(d => d.Key, d => d.Value);
-
-            foreach (KeyValuePair<int, List<UserPreference>> item in filteredUserPreferences)
+            // calculate the deviation for every article
+            /*foreach (int article in articles)
             {
-                double deci = algorithm.Calculate(userPreferences.Where(x => x.Key == userId).First().Value, userPreferences.Where(x => x.Key == item.Key).First().Value);
-                neighbour.Add(item.Key, deci);
-            }
-
-            return neighbour.OrderBy(o => o.Value).ToDictionary(x => x.Key, x => x.Value);
-        }
-
-        private double PredictRate(int userId , int articleId, Dictionary<int, List<UserPreference>> UserPreferences, Dictionary<int, double> nearestNeighbours)
-        {
-            // filter all the nearestneighbours who rated the movie
-            Dictionary<int, double> nearestNeighboursRatedArticle = nearestNeighbours.Where(x => UserPreferences
-                       .Where(p => p.Value.Any(c => c.UserId == x.Key))
-                       .SelectMany(p => p.Value)
-                       .Where(c => c.ArticleId == articleId).Count() > 0).ToDictionary(d => d.Key, d => d.Value);
-
-            double total_coefficient = Math.Abs(nearestNeighboursRatedArticle.Sum(x => Math.Abs(x.Value)));
-            double predictedRate = 0;
-
-            foreach (KeyValuePair<int, double> neighbor in nearestNeighboursRatedArticle)
-            {
-                double influenceWeight = InfluenceWeight(Math.Abs(neighbor.Value), total_coefficient);
-
-                UserPreference user = null;
-                try
+                if (deviationsAlreadyCalculated.Where(x => x == article).Count() > 0)
                 {
-                    // try to get the rating of the user (if exists)
-                    user = UserPreferences
-                         .Where(p => p.Value.Any(c => c.UserId == neighbor.Key))
-                         .SelectMany(p => p.Value)
-                         .Where(c => c.ArticleId == articleId).First();
+                    deviationMatrix.Deviations.Where(x => x.ArticleTwo == article).ToList().
+                        ForEach(x => deviationMatrix.Deviations.Add(
+                            new Deviation
+                            {
+                                ArticleOne = x.ArticleTwo,
+                                ArticleTwo = x.ArticleOne,
+                                Difference = Math.Abs(x.Difference),
+                                items = x.items
+                            }));
                 }
-                catch (Exception e) {
-                    
+                else {
+                    articles.Where(i => i != article).ToList().ForEach(x => deviationMatrix.Deviations.Add(deviationMatrix.CalculateDeviation(userPreferences, article, x)));
+                    deviationsAlreadyCalculated.Add(article);
                 }
-                
-                // if no user found then make the rating 0
-                double rating = user.Rating;
-                double weightedRating = WeightedRating(influenceWeight, rating);
+            }*/
 
-                predictedRate += weightedRating;
-            }
-            return Math.Abs(predictedRate);
+            return deviationMatrix;
         }
-
-        private double InfluenceWeight(double coefficient, double total_coefficient)
-        {
-            return coefficient / total_coefficient;
-        }
-        private double WeightedRating(double influenceweight, double rating)
-        {
-            return influenceweight * rating;
-        }
-
-        private double Deviation(Dictionary<int, List<UserPreference>> userPreferences, int articleOne, int articleTwo)
-        {
-            foreach (KeyValuePair<int, List<UserPreference>> item in userPreferences)
-            {
-                if(item.Value.Any(x => x.ArticleId == articleOne) && item.Value.Any(x => x.ArticleId == articleTwo))
-                {
-                    double ratingOne = item.Value.Where(x => x.ArticleId == articleOne).First().Rating;
-                    double ratingTwo = item.Value.Where(x => x.ArticleId == articleTwo).First().Rating;
-
-                    Console.Out.WriteLine(ratingOne + ":" + ratingTwo);
-                }
-            }
-            return 0;
-        }
-
+        
     }
 }

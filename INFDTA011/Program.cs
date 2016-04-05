@@ -79,6 +79,7 @@ namespace INFDTA011
             ConsoleKeyInfo keyPressed = Console.ReadKey();
 
             IAssingment assignment = new AssignmentTwo();
+            Console.WriteLine();
 
             switch (keyPressed.KeyChar)
             {
